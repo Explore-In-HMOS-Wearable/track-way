@@ -1,0 +1,12 @@
+{
+  "src": [
+    "pages/Index",
+    "view/MapMiniView",
+    "view/PNRView",
+    "pages/HomePage",
+    "pages/LoginPage",
+    "pages/MapPage",
+    "pages/PnrPage",
+    "pages/TripLoggerPage"
+  ]
+}
