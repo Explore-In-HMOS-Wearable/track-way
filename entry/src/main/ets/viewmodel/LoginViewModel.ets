@@ -36,7 +36,7 @@ export class LoginViewModel {
   }
 
   async signInWithHuaweiID(context: common.Context) {
-    this.statusMessage = "Logging in...";
+    this.statusMessage = 'Logging in...';
 
     try {
       const huaweiIdProvider = new authentication.HuaweiIDProvider();

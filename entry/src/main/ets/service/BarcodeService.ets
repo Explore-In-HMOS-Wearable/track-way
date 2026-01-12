@@ -14,14 +14,14 @@ export class BarcodeService {
       level: generateBarcode.ErrorCorrectionLevel.LEVEL_H,
       backgroundColor: 0xFFFFFF,
       pixelMapColor: 0x000000,
-      margin: 1,
+      margin: 1
     };
     try {
       return await generateBarcode.createBarcode(content, options);
     } catch (e) {
       const be = e as BusinessError;
       hilog.error(0x0001, '[BarcodeService]', `QR create failed: code=${be?.code}, msg=${be?.message}`);
-      throw new Error(be?.message ?? 'QR oluşturulamadı.');
+      throw new Error(be?.message ?? 'Failed to create QR.');
     }
   }
 }

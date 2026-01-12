@@ -8,7 +8,7 @@ export class Ticket{
   issuer?: string;
   details?: string;
 
-  constructor(  id: string,
+  constructor( id: string,
   userId:string,
   qrCodeData:string,
   type: string,

@@ -7,14 +7,13 @@ User can select whatever feature they want. Depending on the feature selected, t
 
 # Preview
 
-
 <div>
-  <img src="screens/1.png" width="24%">
-  <img src="screens/2.png" width="24%">
-  <img src="screens/3.png" width="24%">
-  <img src="screens/4.png" width="24%">
-</div>
+  <img src="screenshots/1.png" width="24%">
+  <img src="screenshots/2.png" width="24%">
+  <img src="screenshots/3.png" width="24%">
+  <img src="screenshots/4.png" width="24%">
 
+</div>
 
 
 # Use Cases

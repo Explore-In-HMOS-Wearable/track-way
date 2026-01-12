@@ -7,7 +7,11 @@ import { calendarManager } from '@kit.CalendarKit';
 import { BusinessError } from '@kit.BasicServicesKit';
 
 const DOMAIN = 0x0000;
-export let calendarMgr: calendarManager.CalendarManager | null = null;
+let calendarMgr: calendarManager.CalendarManager | null = null;
+
+export function getCalendarManagerInstance(): calendarManager.CalendarManager | null {
+  return calendarMgr;
+}
 
 export default class EntryAbility extends UIAbility {
 
@@ -39,24 +43,15 @@ export default class EntryAbility extends UIAbility {
     hilog.info(DOMAIN, 'testTag', '%{public}s', 'Ability onDestroy');
   }
 
-
-
   onWindowStageDestroy(): void {
-    // Main window is destroyed, release UI related resources
     hilog.info(DOMAIN, 'testTag', '%{public}s', 'Ability onWindowStageDestroy');
   }
 
   onForeground(): void {
-    // Ability has brought to foreground
     hilog.info(DOMAIN, 'testTag', '%{public}s', 'Ability onForeground');
   }
 
   onBackground(): void {
-    // Ability has back to background
     hilog.info(DOMAIN, 'testTag', '%{public}s', 'Ability onBackground');
   }
-
-
 }
-
-

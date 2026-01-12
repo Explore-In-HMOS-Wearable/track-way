@@ -15,7 +15,7 @@ struct Index {
       position: {
         target: defaultLocation,
         zoom: 17
-      },
+      }
     };
 
     this.markerOptions = {
@@ -24,7 +24,7 @@ struct Index {
       clickable: true,
       alpha: 1,
       anchorU: 0.5,
-      anchorV: 0.5,
+      anchorV: 0.5
     };
   }
 

@@ -6,7 +6,7 @@ export class Weather{
   windSpeedKmH?: number;
   feelsLikeC?: number;
 
-  constructor(  temperatureC: number,
+  constructor( temperatureC: number,
   condition: string,
   iconUrl?: string,
   humidity?: number,

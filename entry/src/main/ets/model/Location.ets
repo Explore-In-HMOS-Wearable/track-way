@@ -4,7 +4,7 @@ export class Location{
   name?: string;
   address?: string;
 
-  constructor(  latitude: number,
+  constructor( latitude: number,
   longitude: number,
   name?: string,
   address?: string

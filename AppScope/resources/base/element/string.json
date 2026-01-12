@@ -3,6 +3,10 @@
     {
       "name": "app_name",
       "value": "TrackWayNew"
+    },
+    {
+      "name": "location_reason",
+      "value": "To show your current position on the map."
     }
   ]
 }

@@ -4,7 +4,7 @@ export class User{
   displayName?: string;
   profilePictureUrl?: string;
 
-  constructor(  uid: string,
+  constructor( uid: string,
   email: string,
   displayName?: string,
   profilePictureUrl?: string) {

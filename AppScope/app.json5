@@ -1,6 +1,6 @@
 {
   "app": {
-    "bundleName": "com.hmosdemos.trackwaynew",
+    "bundleName": "com.hmosdemos.wearable.trackwaynew",
     "vendor": "hmosdemos",
     "versionCode": 101,
     "versionName": "1.0.1",

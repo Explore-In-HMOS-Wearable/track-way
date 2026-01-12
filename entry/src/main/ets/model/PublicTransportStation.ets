@@ -1,4 +1,4 @@
-import { Location } from "./Location";
+import { Location } from './Location';
 
 export enum StationType{
   Metro='Metro',
@@ -15,7 +15,7 @@ export class PublicTransportStation{
   distanceKm?: number;
   lines?: string[];
 
-  constructor(  id: string,
+  constructor( id: string,
   name: string,
   type: StationType,
   location: Location,

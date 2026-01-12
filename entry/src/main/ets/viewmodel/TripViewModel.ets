@@ -1,18 +1,19 @@
 import { calendarManager } from '@kit.CalendarKit';
 import { BusinessError } from '@kit.BasicServicesKit';
-import { promptAction } from '@kit.ArkUI';
-import { calendarMgr } from '../entryability/EntryAbility';
+import { getCalendarManagerInstance } from '../entryability/EntryAbility';
 import { Trip } from '../model/Trip';
 
 const TRIP_EVENT_PREFIX = 'Trip:';
 
-@ObservedV2
+@Observed
 export class TripViewModel {
-  @Trace fromLocation: string = '';
-  @Trace toLocation: string = '';
-  @Trace selectedDate: Date = new Date();
-  @Trace transportType: string = 'Train';
-  @Trace savedTrips: Trip[] = [];
+  fromLocation: string = '';
+  toLocation: string = '';
+  selectedDate: Date = new Date();
+  transportType: string = 'Train';
+  savedTrips: Trip[] = [];
+  operationMessage: string = '';
+  isError: boolean = false;
 
   private mapEventToTrip(event: calendarManager.Event): Trip | null {
     if (!event.title || !event.title.startsWith(TRIP_EVENT_PREFIX)) {
@@ -24,64 +25,95 @@ export class TripViewModel {
       return null;
     }
 
+    if (!event.startTime) {
+      return null;
+    }
+
     const from = titleParts[0].trim();
     const to = titleParts[1].trim();
     const transport = event.description?.replace('Transport: ', '') || 'Unknown';
-    const startTime = new Date(event.startTime!);
+
+    const startTime = event.startTime;
 
     return new Trip(event.id!, from, to, startTime, transport);
   }
 
+  private setMessage(msg: string, isErr: boolean) {
+    this.operationMessage = msg;
+    this.isError = isErr;
+
+    setTimeout(() => {
+      this.operationMessage = '';
+    }, 3000);
+  }
+
+  private clearMessage() {
+    this.operationMessage = '';
+    this.isError = false;
+  }
+
   async loadTrips(): Promise<void> {
-    if (!calendarMgr) {
-      promptAction.showToast({ message: 'Calendar service is not ready.' });
+    this.clearMessage();
+
+    const mgr = getCalendarManagerInstance();
+    if (!mgr) {
+      console.warn('Calendar manager not ready yet.');
       return;
     }
     try {
-      const calendar = await calendarMgr.getCalendar();
-      const allEvents = await calendar.getEvents();
-      const tripEvents = allEvents
-        .map(event => this.mapEventToTrip(event))
-        .filter(trip => trip !== null) as Trip[];
-      this.savedTrips = tripEvents.sort((a, b) => b.startTime.getTime() - a.startTime.getTime());
+      const calendar = await mgr.getCalendar();
+      const allEvents: calendarManager.Event[] = await calendar.getEvents();
+
+      const tripEvents: Trip[] = allEvents
+        .map((event: calendarManager.Event): Trip | null => {
+          return this.mapEventToTrip(event);
+        })
+        .filter((trip: Trip | null): boolean => {
+          return trip !== null;
+        }) as Trip[];
+
+      this.savedTrips = tripEvents.sort((a: Trip, b: Trip) => b.startTime - a.startTime);
       console.info('Successfully loaded trips.');
     } catch (err) {
       const error = err as BusinessError;
       console.error(`Failed to load trips: ${error.message}`);
-      promptAction.showToast({ message: 'Could not load trips.' });
+      this.setMessage('Could not load trips.', true);
     }
   }
 
   async saveTrip(): Promise<void> {
-    if (!calendarMgr) {
-      promptAction.showToast({ message: 'Calendar service is not ready.' });
+    this.clearMessage();
+
+    const mgr = getCalendarManagerInstance();
+    if (!mgr) {
+      this.setMessage('Calendar service is not ready.', true);
       return;
     }
     if (!this.fromLocation || !this.toLocation) {
-      promptAction.showToast({ message: 'Please fill in all fields.' });
+      this.setMessage('Please fill in all fields.', true);
       return;
     }
 
     try {
-      const calendar = await calendarMgr.getCalendar();
+      const calendar = await mgr.getCalendar();
       const event: calendarManager.Event = {
         type: calendarManager.EventType.NORMAL,
         title: `${TRIP_EVENT_PREFIX} ${this.fromLocation} -> ${this.toLocation}`,
         description: `Transport: ${this.transportType}`,
         startTime: this.selectedDate.getTime(),
-        endTime: this.selectedDate.getTime() + (60 * 60 * 1000), // 1 hour duration
-        isAllDay: true,
+        endTime: this.selectedDate.getTime() + (60 * 60 * 1000)
       };
-      await calendar.addEvent(event);
-      promptAction.showToast({ message: 'Trip saved successfully!' });
 
+      await calendar.addEvent(event);
+      this.setMessage('Trip saved successfully!', false);
       this.fromLocation = '';
       this.toLocation = '';
       await this.loadTrips();
+
     } catch (err) {
       const error = err as BusinessError;
       console.error(`Failed to save trip: ${error.message}`);
-      promptAction.showToast({ message: 'Failed to save trip.' });
+      this.setMessage('Failed to save trip.', true);
     }
   }
 }

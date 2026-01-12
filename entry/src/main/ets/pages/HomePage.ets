@@ -1,10 +1,10 @@
-import router from '@ohos.router';
 import { Trip } from '../model/Trip';
 
-@Entry
 @Component
-struct HomePage {
-  private upcomingTrip: Trip = new Trip(1, 'Istanbul', 'Ankara', new Date(), 'Train');
+export struct HomePage {
+  private upcomingTrip: Trip = new Trip(1, 'Istanbul', 'Ankara', new Date().getTime(), 'Train');
+
+  @Consume('pageInfos') pageInfos: NavPathStack;
 
   @Builder CustomTitle() {
     Row() {
@@ -13,17 +13,17 @@ struct HomePage {
         .fontWeight(FontWeight.Bold)
         .fontColor(Color.White)
         .margin({ top: '10%' })
-
     }
     .width('100%')
     .justifyContent(FlexAlign.Center)
   }
+
   build() {
-    Navigation() {
+    NavDestination() {
       Scroll() {
         Grid() {
           GridItem() {
-            this.WeatherWidget(25, '')
+            this.WeatherWidget(25, 'Sunny')
           }
           .onClick(() => {
             console.info('Weather widget clicked');
@@ -34,7 +34,7 @@ struct HomePage {
             this.MapWidget()
           }
           .onClick(() => {
-            router.pushUrl({ url: 'pages/MapPage' });
+            this.pageInfos.pushPath({ name: 'MapPage' });
           })
           .shadow({ radius: 15, color: 'rgba(0,0,0,0.3)', offsetX: 4, offsetY: 8 })
 
@@ -42,7 +42,7 @@ struct HomePage {
             this.TripWidget(this.upcomingTrip)
           }
           .onClick(() => {
-            router.pushUrl({ url: 'pages/TripLoggerPage' });
+            this.pageInfos.pushPath({ name: 'TripLoggerPage' });
           })
           .shadow({ radius: 15, color: 'rgba(0,0,0,0.3)', offsetX: 4, offsetY: 8 })
 
@@ -50,7 +50,7 @@ struct HomePage {
             this.QrCodeWidget()
           }
           .onClick(() => {
-            router.pushUrl({ url: 'pages/Index' });
+            this.pageInfos.pushPath({ name: 'PnrPage' });
           })
           .shadow({ radius: 15, color: 'rgba(0,0,0,0.3)', offsetX: 4, offsetY: 8 })
         }
@@ -65,7 +65,6 @@ struct HomePage {
       .height('100%')
     }
     .title(this.CustomTitle())
-    .titleMode(NavigationTitleMode.Mini)
     .hideBackButton(true)
     .backgroundColor(Color.Black)
   }
@@ -99,7 +98,10 @@ struct HomePage {
         .fontWeight(FontWeight.Bold)
         .fontColor(Color.White)
         .maxLines(1)
-      Text(trip.startTime.toLocaleDateString()).fontSize(11).fontColor('rgba(255,255,255,0.7)')
+
+      Text(new Date(trip.startTime).toLocaleDateString())
+        .fontSize(11)
+        .fontColor('rgba(255,255,255,0.7)')
     }
     .padding(10).width('100%').height('100%').justifyContent(FlexAlign.Center)
     .backgroundColor(0x6B3F69)
@@ -114,5 +116,20 @@ struct HomePage {
     .width('100%').height('100%').justifyContent(FlexAlign.Center)
     .backgroundColor(0x541212)
     .borderRadius(20)
+  }
+}
+
+@Entry
+@Component
+struct HomePageEntry {
+  @Provide('pageInfos') pageInfos: NavPathStack = new NavPathStack();
+
+  build() {
+    Navigation(this.pageInfos) {
+      HomePage()
+    }
+    .mode(NavigationMode.Stack)
+    .hideTitleBar(true)
+    .backgroundColor(Color.Black)
   }
 }

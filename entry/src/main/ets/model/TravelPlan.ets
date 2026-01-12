@@ -1,4 +1,4 @@
-import { Location } from "./Location";
+import { Location } from './Location';
 
 export class TravelPlan{
   id:string;
@@ -11,7 +11,7 @@ export class TravelPlan{
   destination?: Location;
   notes?: string;
 
-  constructor(  id:string,
+  constructor( id:string,
   userId: string,
   title: string,
   startTime: Date,
